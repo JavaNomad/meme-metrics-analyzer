@@ -41,9 +41,9 @@
   body {
     @apply bg-background text-foreground;
   }
-  /* Add styles for input elements */
+  /* Set input text to white by default */
   input {
-    @apply text-foreground dark:text-white;
+    @apply text-white;
   }
 }
 
