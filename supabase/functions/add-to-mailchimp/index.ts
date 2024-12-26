@@ -1,7 +1,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 
 const MAILCHIMP_API_KEY = Deno.env.get('MAILCHIMP_API_KEY')
-const MAILCHIMP_LIST_ID = 'your-audience-list-id' // Replace this with your Mailchimp audience ID
+const MAILCHIMP_LIST_ID = '9af4508fe2' // Updated with the provided Mailchimp audience ID
 const MAILCHIMP_DC = MAILCHIMP_API_KEY?.split('-')[1] // Data center from API key
 
 const corsHeaders = {
