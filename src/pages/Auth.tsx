@@ -61,7 +61,21 @@ const Auth = () => {
         <h1 className="text-2xl font-bold text-center mb-8">Welcome to Base Meme Token Analyzer</h1>
         <SupabaseAuth
           supabaseClient={supabase}
-          appearance={{ theme: ThemeSupa }}
+          appearance={{ 
+            theme: ThemeSupa,
+            style: {
+              input: {
+                color: 'white',
+                backgroundColor: 'hsl(var(--background))',
+              },
+              button: {
+                color: 'white',
+              },
+              label: {
+                color: 'white',
+              }
+            }
+          }}
           providers={[]}
           redirectTo={`${window.location.origin}/auth`}
         />
