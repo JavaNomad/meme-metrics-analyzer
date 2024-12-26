@@ -1,7 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Download } from "lucide-react";
-import ReactMarkdown from 'react-markdown';
 
 interface AnalysisDisplayProps {
   analysis: string;
@@ -20,7 +19,11 @@ export const AnalysisDisplay = ({ analysis, onExport }: AnalysisDisplayProps) =>
       </CardHeader>
       <CardContent>
         <div className="prose prose-invert max-w-none">
-          <ReactMarkdown>{analysis}</ReactMarkdown>
+          {analysis.split('\n').map((line, index) => (
+            <p key={index} className="mb-4">
+              {line}
+            </p>
+          ))}
         </div>
       </CardContent>
     </Card>
