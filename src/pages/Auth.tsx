@@ -4,7 +4,7 @@ import { Auth as SupabaseAuth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 
 const Auth = () => {
   const navigate = useNavigate();
@@ -14,7 +14,7 @@ const Auth = () => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         if (event === "SIGNED_IN") {
-          // Add user to Mailchimp when they confirm their email
+          // Only attempt to add to Mailchimp if we have a confirmed email
           if (session?.user.email && session.user.email_confirmed_at) {
             try {
               const { error } = await supabase.functions.invoke('add-to-mailchimp', {
@@ -24,9 +24,9 @@ const Auth = () => {
               if (error) {
                 console.error('Error adding to Mailchimp:', error);
                 toast({
-                  title: "Error",
-                  description: "Failed to add email to mailing list",
-                  variant: "destructive",
+                  title: "Note",
+                  description: "Signed in successfully, but couldn't add to mailing list",
+                  variant: "default",
                 });
               } else {
                 toast({
@@ -36,13 +36,15 @@ const Auth = () => {
               }
             } catch (error) {
               console.error('Error adding to Mailchimp:', error);
+              // Don't block the sign-in process if Mailchimp fails
               toast({
-                title: "Error",
-                description: "Failed to add email to mailing list",
-                variant: "destructive",
+                title: "Note",
+                description: "Signed in successfully, but couldn't add to mailing list",
+                variant: "default",
               });
             }
           }
+          // Always navigate to home page on successful sign in
           navigate("/");
         }
       }
@@ -61,7 +63,7 @@ const Auth = () => {
           supabaseClient={supabase}
           appearance={{ theme: ThemeSupa }}
           providers={[]}
-          redirectTo={window.location.origin}
+          redirectTo={`${window.location.origin}/auth`}
         />
       </Card>
     </div>
