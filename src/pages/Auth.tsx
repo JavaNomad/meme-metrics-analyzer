@@ -4,9 +4,11 @@ import { Auth as SupabaseAuth } from "@supabase/auth-ui-react";
 import { ThemeSupa } from "@supabase/auth-ui-shared";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
+import { useToast } from "@/components/ui/use-toast";
 
 const Auth = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
@@ -15,11 +17,30 @@ const Auth = () => {
           // Add user to Mailchimp when they confirm their email
           if (session?.user.email && session.user.email_confirmed_at) {
             try {
-              await supabase.functions.invoke('add-to-mailchimp', {
+              const { error } = await supabase.functions.invoke('add-to-mailchimp', {
                 body: { email: session.user.email },
               });
+              
+              if (error) {
+                console.error('Error adding to Mailchimp:', error);
+                toast({
+                  title: "Error",
+                  description: "Failed to add email to mailing list",
+                  variant: "destructive",
+                });
+              } else {
+                toast({
+                  title: "Success",
+                  description: "Added to mailing list successfully",
+                });
+              }
             } catch (error) {
               console.error('Error adding to Mailchimp:', error);
+              toast({
+                title: "Error",
+                description: "Failed to add email to mailing list",
+                variant: "destructive",
+              });
             }
           }
           navigate("/");
@@ -30,7 +51,7 @@ const Auth = () => {
     return () => {
       subscription.unsubscribe();
     };
-  }, [navigate]);
+  }, [navigate, toast]);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-background/80 flex items-center justify-center p-4">
